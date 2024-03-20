@@ -16,8 +16,8 @@ class MenuGUI:
 
         self.menu_options = tk.Listbox(self.root)
         self.menu_options.insert(1, "test")
-        self.menu_options.insert(2, "Other")
-        self.menu_options.insert(99, "Exit")
+        self.menu_options.insert(11, "Other")
+        self.menu_options.insert(12, "Exit")
     
         self.menu_options.pack()
 
@@ -46,7 +46,31 @@ class MenuGUI:
     def info(self):
         pass  # You can implement your information gathering function here
 
-    def exit(self):
+    def passwd(self):
+        pass  # Implement your password attacks function here
+
+    def wire(self):
+        pass  # Implement your wireless testing function here
+
+    def exp(self):
+        pass  # Implement your exploitation tools function here
+
+    def snif(self):
+        pass  # Implement your sniffing & spoofing function here
+
+    def webhack(self):
+        pass  # Implement your web hacking function here
+
+    def tnn(self):
+        pass  # Implement your private tools function here
+
+    def postexp(self):
+        pass  # Implement your post exploitation function here
+
+    def sniper(self):
+        pass  # Implement your recon function here
+
+    def others(self):
         pass  # Implement your other function here
 
 def clearScr():
