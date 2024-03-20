@@ -8,7 +8,7 @@ class MenuGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Menu")
-        self.root.geometry("300x300")
+        self.root.geometry("300x200")
 
         self.menu_label = tk.Label(self.root, text="Select from the menu:")
         self.menu_label.pack()
@@ -34,7 +34,7 @@ class MenuGUI:
             choice = self.menu_options.get(selection)
             if choice == "Information Gathering":
                 self.info()
-            elif choice == "tesssst":
+            elif choice == "XSS Tracer":
                 self.xsstracer_function()
             elif choice == "testt":
                 self.testt_function()
@@ -42,8 +42,8 @@ class MenuGUI:
                 self.testsstt_function()
             elif choice == "tesssstte":
                 self.tesssstte_function()
-            elif choice == "teeeeesssttt":
-                self.teeeeesssttt_function()
+            elif choice == "Wordpress":
+                self.wpue()
             elif choice == "Generate Report":  # Handle report generation
                 self.generate_report_dialog()
             elif choice == "Exit":
@@ -84,9 +84,11 @@ class MenuGUI:
         # Placeholder for tesssstte functionality
         messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
 
-    def teeeeesssttt_function(self):
-        # Placeholder for teeeeesssttt functionality
-        messagebox.showinfo("teeeeesssttt", "teeeeesssttt feature will be implemented soon.")
+    def wpue():
+        os.system("git clone https://github.com/wpscanteam/wpscan.git")
+        xe=input("Select a Wordpress target : ")
+        os.system("cd wpscan && sudo ruby wpscan.rb --url %s --enumerate u"%xe)
+
         
     def xsstracer_function(self):
         self.clearScr()  
