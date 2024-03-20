@@ -15,11 +15,11 @@ class MenuGUI:
 
         self.menu_options = tk.Listbox(self.root)
         self.menu_options.insert(1, "Information Gathering")
-        self.menu_options.insert(2, "tesssst")
+        self.menu_options.insert(2, "XSS Tracer")
         self.menu_options.insert(3, "testt")        
         self.menu_options.insert(4, "testsstt")
         self.menu_options.insert(5, "tesssstte")        
-        self.menu_options.insert(6, "teeeeesssttt")
+        self.menu_options.insert(6, "Wordpress")
         self.menu_options.insert(7, "Generate Report")  # New option
         self.menu_options.insert(8, "Exit")
     
