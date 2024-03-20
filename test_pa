@@ -91,7 +91,7 @@ class MenuGUI:
     def xsstracer_function(self):
         self.clearScr()  
         print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
-        os.system("git clone https://github.com/1N3/XSSTracer.git")
+        os.system("git clone https://github.com/padac78/XSSTracer")
         self.clearScr()  
         xsstracerchoice = input("Select a Target: ")  
         os.system("cd XSSTracer && chmod 777 xsstracer.py && python xsstracer.py %s 80" % xsstracerchoice)
