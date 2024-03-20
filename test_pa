@@ -20,9 +20,6 @@ class MenuGUI:
         self.menu_options.insert(4, "testsstt")
         self.menu_options.insert(5, "tesssstte")        
         self.menu_options.insert(6, "teeeeesssttt")
-        self.menu_options.insert(6, "teeeeesssttt")
-        self.menu_options.insert(6, "teeeeesssttt")
-        self.menu_options.insert(6, "teeeeesssttt")
         self.menu_options.insert(7, "Exit")
     
         self.menu_options.pack()
