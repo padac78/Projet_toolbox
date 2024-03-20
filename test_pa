@@ -8,7 +8,7 @@ class MenuGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Menu")
-        self.root.geometry("900x900")
+        self.root.geometry("300x300")
 
         self.menu_label = tk.Label(self.root, text="Select from the menu:")
         self.menu_label.pack()
@@ -20,7 +20,8 @@ class MenuGUI:
         self.menu_options.insert(4, "testsstt")
         self.menu_options.insert(5, "tesssstte")        
         self.menu_options.insert(6, "teeeeesssttt")
-        self.menu_options.insert(7, "Exit")
+        self.menu_options.insert(7, "Generate Report")  # New option
+        self.menu_options.insert(8, "Exit")
     
         self.menu_options.pack()
 
@@ -33,26 +34,25 @@ class MenuGUI:
             choice = self.menu_options.get(selection)
             if choice == "Information Gathering":
                 self.info()
-            elif choice == "Password Attacks":
-                self.passwd()
-            elif choice == "Wireless Testing":
-                self.wire()
-            elif choice == "Exploitation Tools":
-                self.exp()
-            elif choice == "Sniffing & Spoofing":
-                self.snif()
-            elif choice == "Web Hacking":
-                self.webhack()
-            elif choice == "Private Tools":
-                self.tnn()
-            elif choice == "Post Exploitation":
-                self.postexp()
-            elif choice == "Recon":
-                self.sniper()
-            elif choice == "Other":
-                self.others()
+            elif choice == "tesssst":
+                self.xsstracer_function()
+            elif choice == "testt":
+                self.testt_function()
+            elif choice == "testsstt":
+                self.testsstt_function()
+            elif choice == "tesssstte":
+                self.tesssstte_function()
+            elif choice == "teeeeesssttt":
+                self.teeeeesssttt_function()
+            elif choice == "Generate Report":  # Handle report generation
+                self.generate_report_dialog()
             elif choice == "Exit":
                 sys.exit()
+
+    def generate_report_dialog(self):
+        category = simpledialog.askstring("Generate Report", "Enter report category:")
+        if category:
+            self.generate_report(category)
 
     def generate_report(self, category):
         # Dummy report generation, replace with actual report generation code
@@ -65,88 +65,40 @@ class MenuGUI:
         messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
 
     def info(self):
-        pass  # You can implement your information gathering function here
+        # Placeholder for Information Gathering functionality
+        messagebox.showinfo("Information Gathering", "Information Gathering feature will be implemented soon.")
 
-    def passwd(self):
-        pass  # Implement your password attacks function here
+    def tesssst_function(self):
+        # Placeholder for tesssst functionality
+        messagebox.showinfo("tesssst", "tesssst feature will be implemented soon.")
 
-    def wire(self):
-        pass  # Implement your wireless testing function here
+    def testt_function(self):
+        # Placeholder for testt functionality
+        messagebox.showinfo("testt", "testt feature will be implemented soon.")
 
-    def exp(self):
-        pass  # Implement your exploitation tools function here
+    def testsstt_function(self):
+        # Placeholder for testsstt functionality
+        messagebox.showinfo("testsstt", "testsstt feature will be implemented soon.")
 
-    def snif(self):
-        pass  # Implement your sniffing & spoofing function here
+    def tesssstte_function(self):
+        # Placeholder for tesssstte functionality
+        messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
 
-    def webhack(self):
-        pass  # Implement your web hacking function here
+    def teeeeesssttt_function(self):
+        # Placeholder for teeeeesssttt functionality
+        messagebox.showinfo("teeeeesssttt", "teeeeesssttt feature will be implemented soon.")
+        
+    def xsstracer_function(self):
+        self.clearScr()  
+        print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
+        os.system("git clone https://github.com/1N3/XSSTracer.git")
+        self.clearScr()  
+        xsstracerchoice = input("Select a Target: ")  
+        os.system("cd XSSTracer && chmod 777 xsstracer.py && python xsstracer.py %s 80" % xsstracerchoice)
 
-    def tnn(self):
-        pass  # Implement your private tools function here
-
-    def postexp(self):
-        pass  # Implement your post exploitation function here
-
-    def sniper(self):
-        pass  # Implement your recon function here
-
-    def others(self):
-        pass  # Implement your other function here
-
-def clearScr():
-    # Efface l'écran de la console
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-def scanusers():
-    site = input('Enter a website : ')
-    try:
-        users = site
-        if 'http://www.' in users:
-            users = users.replace('http://www.', '')
-        if 'http://' in users:
-            users = users.replace('http://', '')
-        if '.' in users:
-            users = users.replace('.', '')
-        if '-' in users:
-            users = users.replace('-', '')
-        if '/' in users:
-            users = users.replace('/', '')
-        while len(users) > 2:
-            print(users)
-            resp = urllib.request.urlopen(site + '/cgi-sys/guestbook.cgi?user=%s' % users).read()
-            # You can also use a regular expression
-            if 'invalid username' not in resp.lower():
-                print("\tFound -> %s" % users)
-                pass
-
-            users = users[:-1]
-    except Exception as e:
-        print(e)
-
-def wpue():
-    os.system("git clone https://github.com/wpscanteam/wpscan.git")
-    clearScr()
-    xe=input("Select a Wordpress target : ")
-    os.system("cd wpscan && sudo ruby wpscan.rb --url %s --enumerate u"%xe)
-
-def doork():
-    print("doork is an open-source passive vulnerability auditor tool that automates the process of searching on Google information about specific website based on dorks.")
-    doorkchice = input("Continue Y / N: ")
-    if doorkchice in ['Y','y']:
-        os.system("pip install beautifulsoup4 && pip install requests")
-        os.system("git clone https://github.com/AeonDave/doork")
-        clearScr()
-        doorkt = input("Target : ")
-        os.system("cd doork && python doork.py -t %s -o log.log" % doorkt)
-
-def xsstracer():
-    clearScr()  
-    print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
-    os.system("git clone https://github.com/1N3/XSSTracer.git")
-    clearScr()  
-    xsstracerchoice = input("Select a Target: ")  
-    os.system("cd XSSTracer && chmod 777 xsstracer.py && python xsstracer.py %s 80" % xsstracerchoice)
+    def clearScr(self):
+        # Clears the console screen
+        os.system('cls' if os.name == 'nt' else 'clear')
 
 root = tk.Tk()
 menu_gui = MenuGUI(root)
