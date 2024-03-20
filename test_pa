@@ -3,6 +3,7 @@ import os
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 import urllib.request
+import subprocess
 
 class MenuGUI:
     def __init__(self, root):
@@ -88,6 +89,8 @@ class MenuGUI:
         os.system("git clone https://github.com/padac78/wpscan")
         xe=input("Select a Wordpress target : ")
         os.system("cd wpscan && sudo ruby wpscan.rb --url %s --enumerate u"%xe)
+          # Exécuter wpscan avec Ruby
+        subprocess.run(["ruby", "wpscan/wpscan.rb", "--url", xe, "--enumerate", "u"])
 
         
     def xsstracer_function(self):
