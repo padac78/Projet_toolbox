@@ -2,6 +2,7 @@ import sys
 import os
 import tkinter as tk
 from tkinter import simpledialog, messagebox
+import urllib.request
 
 class MenuGUI:
     def __init__(self, root):
@@ -14,15 +15,6 @@ class MenuGUI:
 
         self.menu_options = tk.Listbox(self.root)
         self.menu_options.insert(1, "Information Gathering")
-        self.menu_options.insert(2, "Password Attacks")
-        self.menu_options.insert(3, "Wireless Testing")
-        self.menu_options.insert(4, "Exploitation Tools")
-        self.menu_options.insert(5, "Sniffing & Spoofing")
-        self.menu_options.insert(6, "Web Hacking")
-        self.menu_options.insert(7, "Private Tools")
-        self.menu_options.insert(8, "Post Exploitation")
-        self.menu_options.insert(9, "Recon")
-        self.menu_options.insert(10, "Smartphones Penetration")
         self.menu_options.insert(11, "Other")
         self.menu_options.insert(12, "Exit")
     
@@ -58,46 +50,7 @@ class MenuGUI:
             elif choice == "Exit":
                 sys.exit()
 
-    def info(self):
-        # Add your code for Information Gathering here
-        # Generate HTML report
-        self.generate_report("Information Gathering")
-
-    def passwd(self):
-        # Add your code for Password Attacks here
-        # Generate HTML report
-        self.generate_report("Password Attacks")
-
-    def wire(self):
-        # Add your code for Wireless Testing here
-        # Generate HTML report
-        self.generate_report("Wireless Testing")
-
-    def exp(self):
-        # Add your code for Exploitation Tools here
-        # Generate HTML report
-        self.generate_report("Exploitation Tools")
-
-    def snif(self):
-        # Add your code for Sniffing & Spoofing here
-        # Generate HTML report
-        self.generate_report("Sniffing & Spoofing")
-
-    def webhack(self):
-        # Add your code for Web Hacking here
-        # Generate HTML report
-        self.generate_report("Web Hacking")
-
-    def tnn(self):
-        # Add your code for Private Tools here
-        # Generate HTML report
-        self.generate_report("Private Tools")
-
-    def postexp(self):
-        # Add your code for Post Exploitation here
-        # Generate HTML report
-        self.generate_report("Post Exploitation")
-
+    
     def sniper(self):
         messagebox.showinfo("Sniper", "This tool is only available for Linux / OSX or similar systems. Do you want to continue?")
         choice_sniper = messagebox.askyesno("Continue?", "Do you want to continue?")
@@ -108,10 +61,7 @@ class MenuGUI:
         else:
             self.root.mainloop()
 
-    def others(self):
-        # Add your code for Other here
-        # Generate HTML report
-        self.generate_report("Other")
+
 
     def generate_report(self, category):
         # Dummy report generation, replace with actual report generation code
@@ -122,6 +72,34 @@ class MenuGUI:
             report_file.write("<p>This is a dummy report. Replace it with actual content.</p>")
             report_file.write("</body></html>")
         messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
+
+def scanusers():
+    site = input('Enter a website : ')
+    try:
+        users = site
+        if 'http://www.' in users:
+            users = users.replace('http://www.', '')
+        if 'http://' in users:
+            users = users.replace('http://', '')
+        if '.' in users:
+            users = users.replace('.', '')
+        if '-' in users:
+            users = users.replace('-', '')
+        if '/' in users:
+            users = users.replace('/', '')
+        while len(users) > 2:
+            print(users)
+            resp = urllib.request.urlopen(site + '/cgi-sys/guestbook.cgi?user=%s' % users).read()
+            # Je peux également utiliser une expression régulière
+            if 'invalid username' not in resp.lower():
+                print("\tFound -> %s" % users)
+                pass
+
+            users = users[:-1]
+    except Exception as e:
+        print(e)
+        
+        
 
 root = tk.Tk()
 menu_gui = MenuGUI(root)
