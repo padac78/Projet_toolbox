@@ -1,15 +1,13 @@
 import sys
-import os
 import tkinter as tk
 from tkinter import simpledialog, messagebox
-import urllib.request
 import subprocess
 
 class MenuGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Menu")
-        self.root.geometry("300x200")
+        self.root.geometry("300x300")
 
         self.menu_label = tk.Label(self.root, text="Select from the menu:")
         self.menu_label.pack()
@@ -86,24 +84,21 @@ class MenuGUI:
         messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
 
     def wpue(self):
-        os.system("git clone https://github.com/padac78/wpscan")
-        xe=input("Select a Wordpress target : ")
-        os.system("cd wpscan && sudo ruby wpscan.rb --url %s --enumerate u"%xe)
-          # Exécuter wpscan avec Ruby
+        subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"])
+        xe = input("Select a Wordpress target : ")
         subprocess.run(["ruby", "wpscan/wpscan.rb", "--url", xe, "--enumerate", "u"])
 
-        
     def xsstracer_function(self):
         self.clearScr()  
         print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
-        os.system("git clone https://github.com/padac78/XSSTracer")
+        subprocess.run(["git", "clone", "https://github.com/padac78/XSSTracer"])
         self.clearScr()  
         xsstracerchoice = input("Select a Target: ")  
-        os.system("cd XSSTracer && chmod 777 xsstracer.py && python xsstracer.py %s 80" % xsstracerchoice)
+        subprocess.run(["python", "XSSTracer/xsstracer.py", xsstracerchoice, "80"])
 
     def clearScr(self):
         # Clears the console screen
-        os.system('cls' if os.name == 'nt' else 'clear')
+        subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
 
 root = tk.Tk()
 menu_gui = MenuGUI(root)
