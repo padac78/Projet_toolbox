@@ -3,7 +3,6 @@ import os
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 import urllib.request
-import subprocess
 
 class MenuGUI:
     def __init__(self, root):
@@ -15,9 +14,16 @@ class MenuGUI:
         self.menu_label.pack()
 
         self.menu_options = tk.Listbox(self.root)
-        self.menu_options.insert(1, "test")
-        self.menu_options.insert(11, "Other")
-        self.menu_options.insert(12, "Exit")
+        self.menu_options.insert(1, "Information Gathering")
+        self.menu_options.insert(2, "tesssst")
+        self.menu_options.insert(3, "testt")        
+        self.menu_options.insert(4, "testsstt")
+        self.menu_options.insert(5, "tesssstte")        
+        self.menu_options.insert(6, "teeeeesssttt")
+        self.menu_options.insert(6, "teeeeesssttt")
+        self.menu_options.insert(6, "teeeeesssttt")
+        self.menu_options.insert(6, "teeeeesssttt")
+        self.menu_options.insert(7, "Exit")
     
         self.menu_options.pack()
 
@@ -28,8 +34,26 @@ class MenuGUI:
         selection = self.menu_options.curselection()
         if selection:
             choice = self.menu_options.get(selection)
-            if choice == "test":
+            if choice == "Information Gathering":
                 self.info()
+            elif choice == "Password Attacks":
+                self.passwd()
+            elif choice == "Wireless Testing":
+                self.wire()
+            elif choice == "Exploitation Tools":
+                self.exp()
+            elif choice == "Sniffing & Spoofing":
+                self.snif()
+            elif choice == "Web Hacking":
+                self.webhack()
+            elif choice == "Private Tools":
+                self.tnn()
+            elif choice == "Post Exploitation":
+                self.postexp()
+            elif choice == "Recon":
+                self.sniper()
+            elif choice == "Other":
+                self.others()
             elif choice == "Exit":
                 sys.exit()
 
@@ -75,7 +99,7 @@ class MenuGUI:
 
 def clearScr():
     # Efface l'écran de la console
-    subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def scanusers():
     site = input('Enter a website : ')
@@ -104,28 +128,28 @@ def scanusers():
         print(e)
 
 def wpue():
-    subprocess.run(["git", "clone", "https://github.com/wpscanteam/wpscan.git"], check=True)
+    os.system("git clone https://github.com/wpscanteam/wpscan.git")
     clearScr()
     xe=input("Select a Wordpress target : ")
-    subprocess.run(["ruby", "wpscan.rb", "--url", xe, "--enumerate", "u"], cwd="wpscan", check=True)
+    os.system("cd wpscan && sudo ruby wpscan.rb --url %s --enumerate u"%xe)
 
 def doork():
     print("doork is an open-source passive vulnerability auditor tool that automates the process of searching on Google information about specific website based on dorks.")
     doorkchice = input("Continue Y / N: ")
     if doorkchice in ['Y','y']:
-        subprocess.run(["pip", "install", "beautifulsoup4", "requests"], check=True)
-        subprocess.run(["git", "clone", "https://github.com/AeonDave/doork"], check=True)
+        os.system("pip install beautifulsoup4 && pip install requests")
+        os.system("git clone https://github.com/AeonDave/doork")
         clearScr()
         doorkt = input("Target : ")
-        subprocess.run(["python", "doork.py", "-t", doorkt, "-o", "log.log"], cwd="doork", check=True)
+        os.system("cd doork && python doork.py -t %s -o log.log" % doorkt)
 
 def xsstracer():
     clearScr()  
     print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
-    subprocess.run(["git", "clone", "https://github.com/1N3/XSSTracer.git"], check=True)
+    os.system("git clone https://github.com/1N3/XSSTracer.git")
     clearScr()  
     xsstracerchoice = input("Select a Target: ")  
-    subprocess.run(["python", "xsstracer.py", xsstracerchoice, "80"], cwd="XSSTracer", check=True)
+    os.system("cd XSSTracer && chmod 777 xsstracer.py && python xsstracer.py %s 80" % xsstracerchoice)
 
 root = tk.Tk()
 menu_gui = MenuGUI(root)
