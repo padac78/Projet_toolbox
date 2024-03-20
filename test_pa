@@ -1,0 +1,128 @@
+import sys
+import os
+import tkinter as tk
+from tkinter import simpledialog, messagebox
+
+class MenuGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Menu")
+        self.root.geometry("900x900")
+
+        self.menu_label = tk.Label(self.root, text="Select from the menu:")
+        self.menu_label.pack()
+
+        self.menu_options = tk.Listbox(self.root)
+        self.menu_options.insert(1, "Information Gathering")
+        self.menu_options.insert(2, "Password Attacks")
+        self.menu_options.insert(3, "Wireless Testing")
+        self.menu_options.insert(4, "Exploitation Tools")
+        self.menu_options.insert(5, "Sniffing & Spoofing")
+        self.menu_options.insert(6, "Web Hacking")
+        self.menu_options.insert(7, "Private Tools")
+        self.menu_options.insert(8, "Post Exploitation")
+        self.menu_options.insert(9, "Recon")
+        self.menu_options.insert(10, "Smartphones Penetration")
+        self.menu_options.insert(11, "Other")
+        self.menu_options.insert(12, "Exit")
+    
+        self.menu_options.pack()
+
+        self.select_button = tk.Button(self.root, text="Select", command=self.handle_selection)
+        self.select_button.pack()
+
+    def handle_selection(self):
+        selection = self.menu_options.curselection()
+        if selection:
+            choice = self.menu_options.get(selection)
+            if choice == "Information Gathering":
+                self.info()
+            elif choice == "Password Attacks":
+                self.passwd()
+            elif choice == "Wireless Testing":
+                self.wire()
+            elif choice == "Exploitation Tools":
+                self.exp()
+            elif choice == "Sniffing & Spoofing":
+                self.snif()
+            elif choice == "Web Hacking":
+                self.webhack()
+            elif choice == "Private Tools":
+                self.tnn()
+            elif choice == "Post Exploitation":
+                self.postexp()
+            elif choice == "Recon":
+                self.sniper()
+            elif choice == "Other":
+                self.others()
+            elif choice == "Exit":
+                sys.exit()
+
+    def info(self):
+        # Add your code for Information Gathering here
+        # Generate HTML report
+        self.generate_report("Information Gathering")
+
+    def passwd(self):
+        # Add your code for Password Attacks here
+        # Generate HTML report
+        self.generate_report("Password Attacks")
+
+    def wire(self):
+        # Add your code for Wireless Testing here
+        # Generate HTML report
+        self.generate_report("Wireless Testing")
+
+    def exp(self):
+        # Add your code for Exploitation Tools here
+        # Generate HTML report
+        self.generate_report("Exploitation Tools")
+
+    def snif(self):
+        # Add your code for Sniffing & Spoofing here
+        # Generate HTML report
+        self.generate_report("Sniffing & Spoofing")
+
+    def webhack(self):
+        # Add your code for Web Hacking here
+        # Generate HTML report
+        self.generate_report("Web Hacking")
+
+    def tnn(self):
+        # Add your code for Private Tools here
+        # Generate HTML report
+        self.generate_report("Private Tools")
+
+    def postexp(self):
+        # Add your code for Post Exploitation here
+        # Generate HTML report
+        self.generate_report("Post Exploitation")
+
+    def sniper(self):
+        messagebox.showinfo("Sniper", "This tool is only available for Linux / OSX or similar systems. Do you want to continue?")
+        choice_sniper = messagebox.askyesno("Continue?", "Do you want to continue?")
+        if choice_sniper:
+            os.system("git clone https://github.com/1N3/Sn1per.git")
+            os.system("cd Sn1per && sudo bash ./install.sh")
+            os.system("sniper")
+        else:
+            self.root.mainloop()
+
+    def others(self):
+        # Add your code for Other here
+        # Generate HTML report
+        self.generate_report("Other")
+
+    def generate_report(self, category):
+        # Dummy report generation, replace with actual report generation code
+        report_filename = f"{category}_report.html"
+        with open(report_filename, "w") as report_file:
+            report_file.write(f"<html><head><title>{category} Report</title></head><body>")
+            report_file.write(f"<h1>{category} Report</h1>")
+            report_file.write("<p>This is a dummy report. Replace it with actual content.</p>")
+            report_file.write("</body></html>")
+        messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
+
+root = tk.Tk()
+menu_gui = MenuGUI(root)
+root.mainloop()
