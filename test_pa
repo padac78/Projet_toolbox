@@ -87,6 +87,9 @@ class MenuGUI:
         subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"])
         xe = input("Select a Wordpress target : ")
         subprocess.run(["ruby", "wpscan/wpscan.rb", "--url", xe, "--enumerate", "u"])
+        result = subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"Error cloning repository: {result.stderr}")
 
     def xsstracer_function(self):
         self.clearScr()  
