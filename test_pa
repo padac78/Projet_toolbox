@@ -84,21 +84,22 @@ class MenuGUI:
         print("Info function not implemented yet.")
 
 
-    def sqlmap():
-        yes = ['Y', 'y', 'yes', 'Yes']
-        no = ['N', 'n', 'no', 'No']
+def sqlmap(self):
+    yes = ['Y', 'y', 'yes', 'Yes']
+    no = ['N', 'n', 'no', 'No']
 
-        print("usage : python sqlmap.py -h")
-        choice8 = input("Continue: y/n :")
-        if choice8 in yes:
-            subprocess.run(["git", "clone", "https://github.com/padac78/sqlmap", "sqlmap-dev"])
-        elif choice8 in no:
-            subprocess.run(["clear"])
-            info()
-        elif choice8 == "":
-            menu()
-        else: 
-            menu()
+    print("usage : python sqlmap.py -h")
+    choice8 = input("Continue: y/n :")
+    if choice8 in yes:
+        subprocess.run(["git", "clone", "https://github.com/padac78/sqlmap", "sqlmap-dev"])
+    elif choice8 in no:
+        subprocess.run(["clear"])
+        self.info()
+    elif choice8 == "":
+        self.menu()
+    else: 
+        self.menu()
+
 
 # Define the info and menu functions if they are not defined elsewhere in your code
 def info():
