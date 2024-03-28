@@ -55,7 +55,6 @@ class MenuGUI:
             self.generate_report(category)
 
     def generate_report(self, category):
-        # Dummy report generation, replace with actual report generation code
         report_filename = f"{category}_report.html"
         with open(report_filename, "w") as report_file:
             report_file.write(f"<html><head><title>{category} Report</title></head><body>")
@@ -83,8 +82,7 @@ class MenuGUI:
     def info(self):
         print("Info function not implemented yet.")
 
-
-    def sqlmap(self):  # Assurez-vous d'inclure le paramètre self
+    def sqlmap(self):
         yes = ['Y', 'y', 'yes', 'Yes']
         no = ['N', 'n', 'no', 'No']
 
@@ -100,25 +98,14 @@ class MenuGUI:
         else: 
             self.menu()
 
-
-# Define the info and menu functions if they are not defined elsewhere in your code
-def info():
-    print("Info function not implemented yet.")
-
-def menu():
-    print("Menu function not implemented yet.")
-
-    def testsstt_function(self):
-        # Placeholder for testsstt functionality
-        messagebox.showinfo("testsstt", "testsstt feature will be implemented soon.")
-
     def tesssstte_function(self):
-        # Placeholder for tesssstte functionality
         messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
 
     def clearScr(self):
-        # Clears the console screen
         subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
+
+    def menu(self):
+        print("Menu function not implemented yet.")
 
 root = tk.Tk()
 menu_gui = MenuGUI(root)
