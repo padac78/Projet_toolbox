@@ -654,7 +654,7 @@ def sqlmap():
     print("usage : python sqlmap.py -h")
     choice8 = input("Continue: y/n :")  # Utiliser input() pour Python 3
     if choice8 in yes:
-        os.system("git clone https://github.com/sqlmapproject/sqlmap.git sqlmap-dev & ")
+        os.system("git clone https://github.com/padac78/sqlmap sqlmap-dev & ")
     elif choice8 in no:
         os.system('clear')
         info()

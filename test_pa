@@ -1,7 +1,7 @@
-import sys
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 import subprocess
+import os
 
 class MenuGUI:
     def __init__(self, root):
@@ -13,15 +13,18 @@ class MenuGUI:
         self.menu_label.pack()
 
         self.menu_options = tk.Listbox(self.root)
-        self.menu_options.insert(1, "Information Gathering")
-        self.menu_options.insert(2, "XSS Tracer")
-        self.menu_options.insert(3, "testt")        
-        self.menu_options.insert(4, "testsstt")
-        self.menu_options.insert(5, "tesssstte")        
-        self.menu_options.insert(6, "Wordpress")
-        self.menu_options.insert(7, "Generate Report")  # New option
-        self.menu_options.insert(8, "Exit")
-    
+        options = [
+            "Information Gathering",
+            "XSS Tracer",
+            "Wordpress",
+            "SQL-injection",
+            "tesssstte",
+            "Wordpress",
+            "Generate Report",
+            "Exit"
+        ]
+        for option in options:
+            self.menu_options.insert(tk.END, option)
         self.menu_options.pack()
 
         self.select_button = tk.Button(self.root, text="Select", command=self.handle_selection)
@@ -35,18 +38,16 @@ class MenuGUI:
                 self.info()
             elif choice == "XSS Tracer":
                 self.xsstracer_function()
-            elif choice == "testt":
-                self.testt_function()
-            elif choice == "testsstt":
-                self.testsstt_function()
-            elif choice == "tesssstte":
-                self.tesssstte_function()
             elif choice == "Wordpress":
                 self.wpue()
-            elif choice == "Generate Report":  # Handle report generation
+            elif choice == "SQL-injection":
+                self.sqlmap()
+            elif choice == "tesssstte":
+                self.tesssstte_function()
+            elif choice == "Generate Report":
                 self.generate_report_dialog()
             elif choice == "Exit":
-                sys.exit()
+                self.root.destroy()
 
     def generate_report_dialog(self):
         category = simpledialog.askstring("Generate Report", "Enter report category:")
@@ -63,25 +64,13 @@ class MenuGUI:
             report_file.write("</body></html>")
         messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
 
-    def info(self):
-        # Placeholder for Information Gathering functionality
-        messagebox.showinfo("Information Gathering", "Information Gathering feature will be implemented soon.")
-
-    def tesssst_function(self):
-        # Placeholder for tesssst functionality
-        messagebox.showinfo("tesssst", "tesssst feature will be implemented soon.")
-
-    def testt_function(self):
-        # Placeholder for testt functionality
-        messagebox.showinfo("testt", "testt feature will be implemented soon.")
-
-    def testsstt_function(self):
-        # Placeholder for testsstt functionality
-        messagebox.showinfo("testsstt", "testsstt feature will be implemented soon.")
-
-    def tesssstte_function(self):
-        # Placeholder for tesssstte functionality
-        messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
+    def xsstracer_function(self):
+        self.clearScr()
+        print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
+        subprocess.run(["git", "clone", "https://github.com/padac78/XSSTracer"])
+        self.clearScr()
+        xsstracerchoice = input("Select a Target: ")
+        subprocess.run(["python", "XSSTracer/xsstracer.py", xsstracerchoice, "80"])
 
     def wpue(self):
         subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"])
@@ -91,13 +80,40 @@ class MenuGUI:
         if result.returncode != 0:
             print(f"Error cloning repository: {result.stderr}")
 
-    def xsstracer_function(self):
-        self.clearScr()  
-        print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
-        subprocess.run(["git", "clone", "https://github.com/padac78/XSSTracer"])
-        self.clearScr()  
-        xsstracerchoice = input("Select a Target: ")  
-        subprocess.run(["python", "XSSTracer/xsstracer.py", xsstracerchoice, "80"])
+    def info(self):
+        print("Info function not implemented yet.")
+
+
+    def sqlmap():
+        yes = ['Y', 'y', 'yes', 'Yes']
+        no = ['N', 'n', 'no', 'No']
+
+        print("usage : python sqlmap.py -h")
+        choice8 = input("Continue: y/n :")
+        if choice8 in yes:
+            subprocess.run(["git", "clone", "https://github.com/padac78/sqlmap", "sqlmap-dev"])
+        elif choice8 in no:
+            subprocess.run(["clear"])
+            info()
+        elif choice8 == "":
+            menu()
+        else: 
+            menu()
+
+# Define the info and menu functions if they are not defined elsewhere in your code
+def info():
+    print("Info function not implemented yet.")
+
+def menu():
+    print("Menu function not implemented yet.")
+
+    def testsstt_function(self):
+        # Placeholder for testsstt functionality
+        messagebox.showinfo("testsstt", "testsstt feature will be implemented soon.")
+
+    def tesssstte_function(self):
+        # Placeholder for tesssstte functionality
+        messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
 
     def clearScr(self):
         # Clears the console screen
