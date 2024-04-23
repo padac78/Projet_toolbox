@@ -3,10 +3,15 @@ from tkinter import simpledialog, messagebox
 import subprocess
 import os
 import requests
+import urllib.error
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import re
 
 class MenuGUI:
-    def __init__(self, root):
+    def __init__(self, root, serverip):
         self.root = root
+        self.serverip = serverip
         self.root.title("Menu")
         self.root.geometry("300x300")
 
@@ -15,11 +20,10 @@ class MenuGUI:
 
         self.menu_options = tk.Listbox(self.root)
         options = [
-            "Information Gathering",
             "XSS Tracer",
             "Wordpress",
             "SQL-injection",
-            "tesssstte",
+            "Sites",
             "Generate Report",
             "Exit"
         ]
@@ -40,8 +44,8 @@ class MenuGUI:
                 self.wpscan_scan()
             elif choice == "SQL-injection":
                 self.sqlmap_attack()
-#            elif choice == "tesssstte":
- #               self.tesssstte_function()
+            elif choice == "Sites":
+                self.getSites()
             elif choice == "Generate Report":
                 self.generate_report_dialog()
             elif choice == "Exit":
@@ -114,8 +118,37 @@ class MenuGUI:
     def tesssstte_function(self):
         messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
 
-    def clearScr(self):
-        subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
+    def getSites(self):
+        """
+        get all websites on same server
+        from bing search
+        """
+        lista = []
+        page = 1
+        while page <= 101:
+            try:
+                bing = "http://www.bing.com/search?q=ip%3A" + self.serverip + "+&count=50&first=" + str(page)
+                openbing = urlopen(bing)
+                soup = BeautifulSoup(openbing, 'html.parser')
+                findwebs = [h2.a['href'] for h2 in soup.find_all('h2')]
+                for i in range(len(findwebs)):
+                    allnoclean = findwebs[i]
+                    findall1 = re.findall('http://(.*?)/', allnoclean)
+                    for idx, item in enumerate(findall1):
+                        if 'www' not in item:
+                            findall1[idx] = 'http://www.' + item + '/'
+                        else:
+                            findall1[idx] = 'http://' + item + '/'
+                    lista.extend(findall1)
+                
+                page += 50
+            except urllib.error.URLError:
+                pass
+        self.sites = list(set(lista))  # use set to get unique items
+        print('\033c')  # clear screen
+        print('[*] Found', len(lista), 'Website\n')
+        for site in self.sites :
+            print(site)    
 
     def menu(self):
         print("Menu function not implemented yet.")
