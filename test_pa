@@ -68,16 +68,15 @@ class MenuGUI:
         print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
         subprocess.run(["git", "clone", "https://github.com/padac78/XSSTracer"])
         self.clearScr()
-        xsstracerchoice = input("Select a Target: ")
-        subprocess.run(["python", "XSSTracer/xsstracer.py", xsstracerchoice, "80"])
+        xsstracerchoice = simpledialog.askstring("XSS Tracer", "Select a Target:")
+        if xsstracerchoice:
+            subprocess.run(["python", "XSSTracer/xsstracer.py", xsstracerchoice, "80"])
 
     def wpue(self):
-        subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"])
-        xe = input("Select a Wordpress target : ")
-        subprocess.run(["ruby", "wpscan/wpscan.rb", "--url", xe, "--enumerate", "u"])
-        result = subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"], capture_output=True, text=True)
-        if result.returncode != 0:
-            print(f"Error cloning repository: {result.stderr}")
+        xe = simpledialog.askstring("Wordpress", "Select a WordPress target:")
+        if xe:
+            subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"])
+            subprocess.run(["ruby", "wpscan/wpscan.rb", "--url", xe, "--enumerate", "u"])
 
     def info(self):
         print("Info function not implemented yet.")
