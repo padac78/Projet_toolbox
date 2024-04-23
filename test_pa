@@ -91,7 +91,7 @@ class MenuGUI:
         if site_url:
             try:
                 # Exécute WPScan avec l'URL du site WordPress fournie en argument
-                subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect"])
+                subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect", "--wp-content-dir", "/path/to/wp-content"])
             except FileNotFoundError:
                 print("WPScan n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
 
