@@ -23,7 +23,7 @@ class MenuGUI:
             "XSS Tracer",
             "Wordpress",
             "SQL-injection",
-            "tesssstte",
+            "Sites",
             "Generate Report",
             "Exit"
         ]
@@ -44,6 +44,8 @@ class MenuGUI:
                 self.wpscan_scan()
             elif choice == "SQL-injection":
                 self.sqlmap_attack()
+            elif choice == "Sites":
+                self.getSites()
             elif choice == "Generate Report":
                 self.generate_report_dialog()
             elif choice == "Exit":
