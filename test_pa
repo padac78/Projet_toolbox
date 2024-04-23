@@ -151,9 +151,8 @@ class MenuGUI:
         for site in self.sites :
             print(site)    
 
-    def menu(self):
-        print("Menu function not implemented yet.")
+
 
 root = tk.Tk()
-menu_gui = MenuGUI(root,"127.0.0.1")
+menu_gui = MenuGUI(root,"8.8.8.8")
 root.mainloop()
