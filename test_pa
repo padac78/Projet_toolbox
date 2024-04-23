@@ -9,8 +9,9 @@ from bs4 import BeautifulSoup
 import re
 
 class MenuGUI:
-    def __init__(self, root):
+    def __init__(self, root, serverip):
         self.root = root
+        self.serverip = serverip
         self.root.title("Menu")
         self.root.geometry("300x300")
 
@@ -154,5 +155,5 @@ class MenuGUI:
         print("Menu function not implemented yet.")
 
 root = tk.Tk()
-menu_gui = MenuGUI(root)
+menu_gui = MenuGUI(root,"127.0.0.1")
 root.mainloop()
