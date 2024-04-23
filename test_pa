@@ -1,12 +1,46 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 import subprocess
-import os
 import requests
 import urllib.error
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
+from fpdf import FPDF
+
+def get_wordpress_scan_data(site_url):
+    """
+    This function gets the WordPress scan data.
+
+    Parameters:
+    site_url (str): The URL of the WordPress site.
+
+    Returns:
+    dict: The WordPress scan data.
+    """
+    try:
+        # Exécute WPScan avec l'URL du site WordPress fournie en argument
+        result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect", "--wp-content-dir", "/path/to/wp-content"], capture_output=True, text=True)
+        return {"WPScan Output": result.stdout}
+    except FileNotFoundError:
+        return {"Error": "WPScan not found on the system. Make sure it is installed and accessible in your PATH."}
+
+def create_pdf_report(data, filename):
+    """
+    This function creates a PDF report from the provided data.
+
+    Parameters:
+    data (dict): The data to be included in the report.
+    filename (str): The filename for the PDF report.
+    """
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="WordPress Scan Report", ln=True, align="C")
+    pdf.ln(10)
+    for key, value in data.items():
+        pdf.cell(200, 10, txt=f"{key}: {value}", ln=True)
+    pdf.output(filename)
 
 class MenuGUI:
     def __init__(self, root, serverip):
@@ -20,7 +54,6 @@ class MenuGUI:
 
         self.menu_options = tk.Listbox(self.root)
         options = [
-            "Information Gathering",
             "XSS Tracer",
             "Wordpress",
             "SQL-injection",
@@ -36,35 +69,35 @@ class MenuGUI:
         self.select_button.pack()
 
     def handle_selection(self):
-        selection = self.menu_options.curselection()
-        if selection:
-            choice = self.menu_options.get(selection)
-            if choice == "XSS Tracer":
-                self.perform_xss_attack()
-            elif choice == "Wordpress":
-                self.wpscan_scan()
-            elif choice == "SQL-injection":
-                self.sqlmap_attack()
-            elif choice == "Sites":
-                self.getSites()
-            elif choice == "Generate Report":
-                self.generate_report_dialog()
-            elif choice == "Exit":
-                self.root.destroy()
-
-    def generate_report_dialog(self):
-        category = simpledialog.askstring("Generate Report", "Enter report category:")
-        if category:
-            self.generate_report(category)
+        selected_option = self.menu_options.get(self.menu_options.curselection())
+        if selected_option == "XSS Tracer":
+            self.perform_xss_attack()
+        elif selected_option == "Wordpress":
+            self.wpscan_scan()
+        elif selected_option == "SQL-injection":
+            self.sqlmap_attack()
+        elif selected_option == "Sites":
+            self.getSites()
+        elif selected_option == "Generate Report":
+            self.generate_report("Scan")
+        elif selected_option == "Exit":
+            self.root.quit()
 
     def generate_report(self, category):
-        report_filename = f"{category}_report.html"
+        report_filename = f"{category}_report.pdf"
         with open(report_filename, "w") as report_file:
-            report_file.write(f"<html><head><title>{category} Report</title></head><body>")
-            report_file.write(f"<h1>{category} Report</h1>")
-            report_file.write("<p>This is a dummy report. Replace it with actual content.</p>")
-            report_file.write("</body></html>")
-        messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
+            report_file.write(f"Creating PDF report: {report_filename}")
+        messagebox.showinfo("Report Generated", f"PDF report for {category} has been generated: {report_filename}")
+
+        # Generate PDF report
+        try:
+            # Récupérer les données du scan WordPress
+            site_url = simpledialog.askstring("Wordpress", "Enter the Wordpress site URL:")
+            if site_url:
+                wordpress_data = get_wordpress_scan_data(site_url)
+                create_pdf_report(wordpress_data, report_filename)
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while generating PDF report: {str(e)}")
 
     def perform_xss_attack(self):
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
@@ -100,24 +133,20 @@ class MenuGUI:
         if site_url:
             try:
                 # Exécute WPScan avec l'URL du site WordPress fournie en argument
-                subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect", "--wp-content-dir", "/path/to/wp-content"])
+                result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect", "--wp-content-dir", "/path/to/wp-content"], capture_output=True, text=True)
+                messagebox.showinfo("WPScan Output", result.stdout)
             except FileNotFoundError:
                 print("WPScan n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
-
-    def info(self):
-        print("Info function not implemented yet.")
 
     def sqlmap_attack(self):
         url = simpledialog.askstring("SQLMap", "Enter the URL to perform SQLMap attack on:")
         if url:
             try:
                 # Exécuter SQLMap avec l'URL fournie en argument
-                subprocess.run(["sqlmap", "-u", url, "--dbs"])
+                result = subprocess.run(["sqlmap", "-u", url, "--dbs"], capture_output=True, text=True)
+                messagebox.showinfo("SQLMap Output", result.stdout)
             except FileNotFoundError:
                 print("SQLMap n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
-
-    def tesssstte_function(self):
-        messagebox.showinfo("tesssstte", "tesssstte feature will be implemented soon.")
 
     def getSites(self):
         """
@@ -150,8 +179,6 @@ class MenuGUI:
         print('[*] Found', len(lista), 'Website\n')
         for site in self.sites :
             print(site)    
-
-
 
 root = tk.Tk()
 menu_gui = MenuGUI(root,"8.8.8.8")
