@@ -34,16 +34,14 @@ class MenuGUI:
         selection = self.menu_options.curselection()
         if selection:
             choice = self.menu_options.get(selection)
-            if choice == "Information Gathering":
-                self.info()
-            elif choice == "XSS Tracer":
+            if choice == "XSS Tracer":
                 self.perform_xss_attack()
             elif choice == "Wordpress":
                 self.wpscan_scan()
             elif choice == "SQL-injection":
                 self.sqlmap_attack()
-            elif choice == "tesssstte":
-                self.tesssstte_function()
+#            elif choice == "tesssstte":
+ #               self.tesssstte_function()
             elif choice == "Generate Report":
                 self.generate_report_dialog()
             elif choice == "Exit":
