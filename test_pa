@@ -19,7 +19,6 @@ class MenuGUI:
             "Wordpress",
             "SQL-injection",
             "tesssstte",
-            "Wordpress",
             "Generate Report",
             "Exit"
         ]
@@ -39,7 +38,7 @@ class MenuGUI:
             elif choice == "XSS Tracer":
                 self.xsstracer_function()
             elif choice == "Wordpress":
-                self.wpue()
+                self.wpscan_scan()
             elif choice == "SQL-injection":
                 self.sqlmap()
             elif choice == "tesssstte":
@@ -72,11 +71,14 @@ class MenuGUI:
         if xsstracerchoice:
             subprocess.run(["python", "XSSTracer/xsstracer.py", xsstracerchoice, "80"])
 
-    def wpue(self):
-        xe = simpledialog.askstring("Wordpress", "Select a WordPress target:")
-        if xe:
-            subprocess.run(["git", "clone", "https://github.com/padac78/wpscan"])
-            subprocess.run(["ruby", "wpscan/wpscan.rb", "--url", xe, "--enumerate", "u"])
+    def wpscan_scan(self):
+        site_url = simpledialog.askstring("Wordpress", "Enter the Wordpress site URL:")
+        if site_url:
+            try:
+                # Exécute WPScan avec l'URL du site WordPress fournie en argument
+                subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u"])
+            except FileNotFoundError:
+                print("WPScan n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
 
     def info(self):
         print("Info function not implemented yet.")
