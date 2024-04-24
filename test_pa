@@ -187,16 +187,19 @@ class MenuGUI:
         site_url = simpledialog.askstring("Wordpress", "Enter the Wordpress site URL:")
         if site_url:
             try:
-            # Exécute WPScan avec l'URL du site WordPress fournie en argument
+                # Exécute WPScan avec l'URL du site WordPress fournie en argument
                 result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect", "--wp-content-dir", "/path/to/wp-content"], capture_output=True, text=True)
                 output_window = tk.Toplevel(self.root)
                 output_window.title("WPScan Output")
                 output_text = tk.Text(output_window)
                 output_text.insert(tk.END, result.stdout)
                 output_text.pack(fill=tk.BOTH, expand=True)
+                return {"WPScan Output": result.stdout}  # Add this line
             except FileNotFoundError:
-                print("WPScan n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
-
+                error_message = "WPScan n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution."
+                print(error_message)
+                return {"Error": error_message}  # Add this line
+            
     def sqlmap_attack(self):
         url = simpledialog.askstring("SQLMap", "Enter the URL to perform SQLMap attack on:")
         if url:
