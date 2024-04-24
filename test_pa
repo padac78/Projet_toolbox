@@ -7,6 +7,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 from fpdf import FPDF
+import nmap
 
 def get_wordpress_scan_data(site_url):
     """
@@ -58,6 +59,7 @@ class MenuGUI:
             "Wordpress",
             "SQL-injection",
             "Sites",
+            "Nmap",
             "Generate Report",
             "Exit"
         ]
@@ -78,6 +80,8 @@ class MenuGUI:
             self.sqlmap_attack()
         elif selected_option == "Sites":
             self.getSites()
+        elif selected_option == "Nmap":
+            self.nmap_scan()
         elif selected_option == "Generate Report":
             self.generate_report("Scan")
         elif selected_option == "Exit":
@@ -98,6 +102,28 @@ class MenuGUI:
                 create_pdf_report(wordpress_data, report_filename)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while generating PDF report: {str(e)}")
+    
+
+    def nmap_scan(target):
+        nm = nmap.PortScanner()
+        nm.scan(hosts=target, arguments='-sV -p 1-1024')  # Scan ports 1 to 1024 with service version detection
+        return nm
+
+    if __name__ == "__main__":
+            target = input("Enter the target IP or hostname: ")
+    print("Scanning target:", target)
+    
+    scan_result = nmap_scan(target)
+
+    for host in scan_result.all_hosts():
+        print("Host:", host)
+        for proto in scan_result[host].all_protocols():
+            print("Protocol:", proto)
+            ports = scan_result[host][proto].keys()
+            for port in ports:
+                state = scan_result[host][proto][port]['state']
+                service = scan_result[host][proto][port]['name']
+                print(f"Port: {port} - State: {state} - Service: {service}")
 
     def perform_xss_attack(self):
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
