@@ -104,27 +104,28 @@ class MenuGUI:
             messagebox.showerror("Error", f"An error occurred while generating PDF report: {str(e)}")
     
 
-    def nmap_scan(target):
-        nm = nmap.PortScanner()
-        nm.scan(hosts=target, arguments='-sV -p 1-1024')  # Scan ports 1 to 1024 with service version detection
-        return nm
+    def nmap_scan(self):
+        target = simpledialog.askstring("Nmap", "Enter the target IP or hostname:")
+        if target:
+            nm = nmap.PortScanner()
+            nm.scan(hosts=target, arguments='-sV -p 1-1024')  # Scan ports 1 to 1024 with service version detection
+            scan_result = nm
 
-    if __name__ == "__main__":
-            target = input("Enter the target IP or hostname: ")
-    print("Scanning target:", target)
-    
-    scan_result = nmap_scan(target)
+            output_window = tk.Toplevel(self.root)
+            output_window.title("Nmap Scan Output")
+            output_text = tk.Text(output_window)
 
-    for host in scan_result.all_hosts():
-        print("Host:", host)
-        for proto in scan_result[host].all_protocols():
-            print("Protocol:", proto)
-            ports = scan_result[host][proto].keys()
-            for port in ports:
-                state = scan_result[host][proto][port]['state']
-                service = scan_result[host][proto][port]['name']
-                print(f"Port: {port} - State: {state} - Service: {service}")
+            for host in scan_result.all_hosts():
+                output_text.insert(tk.END, f"Host: {host}\n")
+                for proto in scan_result[host].all_protocols():
+                    output_text.insert(tk.END, f"Protocol: {proto}\n")
+                    ports = scan_result[host][proto].keys()
+                    for port in ports:
+                        state = scan_result[host][proto][port]['state']
+                        service = scan_result[host][proto][port]['name']
+                        output_text.insert(tk.END, f"Port: {port} - State: {state} - Service: {service}\n")
 
+            output_text.pack(fill=tk.BOTH, expand=True)
     def perform_xss_attack(self):
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
         if url:
