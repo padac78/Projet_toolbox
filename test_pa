@@ -9,6 +9,9 @@ import re
 from fpdf import FPDF
 import nmap
 
+
+
+
 def get_wordpress_scan_data(site_url):
     """
     This function gets the WordPress scan data.
@@ -44,11 +47,12 @@ def create_pdf_report(data, filename):
     pdf.output(filename)
 
 class MenuGUI:
+    
     def __init__(self, root, serverip):
         self.root = root
         self.serverip = serverip
         self.root.title("Menu")
-        self.root.geometry("300x300")
+        self.root.geometry("400x400")
 
         self.menu_label = tk.Label(self.root, text="Select from the menu:")
         self.menu_label.pack()
@@ -60,6 +64,7 @@ class MenuGUI:
             "SQL-injection",
             "Sites",
             "Nmap",
+            "Check CVE",
             "Generate Report",
             "Exit"
         ]
@@ -67,8 +72,17 @@ class MenuGUI:
             self.menu_options.insert(tk.END, option)
         self.menu_options.pack()
 
+        self.entry_label = tk.Label(self.root, text="Enter keyword:")
+        self.entry_label.pack()
+
+        self.entry = tk.Entry(self.root)
+        self.entry.pack()
+
         self.select_button = tk.Button(self.root, text="Select", command=self.handle_selection)
         self.select_button.pack()
+
+        self.text = tk.Text(self.root, height=10, width=50)
+        self.text.pack()
 
     def handle_selection(self):
         selected_option = self.menu_options.get(self.menu_options.curselection())
@@ -80,12 +94,15 @@ class MenuGUI:
             self.sqlmap_attack()
         elif selected_option == "Sites":
             self.getSites()
+        elif selected_option == "Check CVE":
+            self.search_cve()
         elif selected_option == "Nmap":
             self.nmap_scan()
         elif selected_option == "Generate Report":
             self.generate_report("Scan")
         elif selected_option == "Exit":
             self.root.quit()
+
 
     def generate_report(self, category):
         report_filename = f"{category}_report.pdf"
@@ -102,13 +119,12 @@ class MenuGUI:
                 create_pdf_report(wordpress_data, report_filename)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while generating PDF report: {str(e)}")
-    
 
     def nmap_scan(self):
         target = simpledialog.askstring("Nmap", "Enter the target IP or hostname:")
         if target:
             nm = nmap.PortScanner()
-            nm.scan(hosts=target, arguments='-sV -p 1-1024')  # Scan ports 1 to 1024 with service version detection
+            nm.scan(hosts=target, arguments='-sV -p 1-1024')  
             scan_result = nm
 
             output_window = tk.Toplevel(self.root)
@@ -126,6 +142,25 @@ class MenuGUI:
                         output_text.insert(tk.END, f"Port: {port} - State: {state} - Service: {service}\n")
 
             output_text.pack(fill=tk.BOTH, expand=True)
+            output_window.mainloop()  # Make the output window visible
+    
+    def search_cve(self):
+        cve_id = simpledialog.askstring("CVE", "Entrez l'ID de la CVE:")
+        if cve_id:
+            url = f"https://nvd.nist.gov/vuln/detail/{cve_id}"
+            try:
+                response = requests.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                cve_detail_element = soup.find('p', attrs={'data-testid': 'vuln-description'})
+                if cve_detail_element is not None:
+                    cve_detail = cve_detail_element.text.strip()
+                    self.text.insert(tk.END, f"CVE Detail for {cve_id}:\n")
+                    self.text.insert(tk.END, f"{cve_detail}\n")
+                else:
+                    self.text.insert(tk.END, f"No detail found for CVE: {cve_id}\n")
+            except Exception as e:
+                self.text.insert(tk.END, f"An error occurred while checking CVE: {str(e)}\n")
+    
     def perform_xss_attack(self):
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
         if url:
@@ -212,5 +247,5 @@ class MenuGUI:
             print(site)    
 
 root = tk.Tk()
-menu_gui = MenuGUI(root,"8.8.8.8")
+menu_gui = MenuGUI(root,"217.70.184.55")
 root.mainloop()
