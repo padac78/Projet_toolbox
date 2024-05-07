@@ -170,22 +170,22 @@ class MenuGUI:
             except requests.exceptions.RequestException as e:
                 print("An error occurred:", e)
 
-def wpscan_scan(self):
-    site_url = simpledialog.askstring("Wordpress", "Entre l'URL du site à scanner:")
-    if site_url:
-        try:
-            # Exécute WPScan avec l'URL du site WordPress fournie en argument
-            result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect"], capture_output=True, text=True, stderr=subprocess.STDOUT, check=True)
-            output_window = tk.Toplevel(self.root)
-            output_window.title("WPScan Output")
-            output_text = tk.Text(output_window)
-            output_text.insert(tk.END, result.stdout)
-            output_text.pack(fill=tk.BOTH, expand=True)
-            return {"WPScan Output": result.stdout}
-        except (FileNotFoundError, subprocess.CalledProcessError) as e:
-            error_message = str(e)
-            print(error_message)
-            return {"Error": error_message}
+    def wpscan_scan(self):
+        site_url = simpledialog.askstring("Wordpress", "Entre l'URL du site à scanner:")
+        if site_url:
+            try:
+                # Exécute WPScan avec l'URL du site WordPress fournie en argument
+                result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect"], capture_output=True, text=True, stderr=subprocess.STDOUT, check=True)
+                output_window = tk.Toplevel(self.root)
+                output_window.title("WPScan Output")
+                output_text = tk.Text(output_window)
+                output_text.insert(tk.END, result.stdout)
+                output_text.pack(fill=tk.BOTH, expand=True)
+                return {"WPScan Output": result.stdout}
+            except (FileNotFoundError, subprocess.CalledProcessError) as e:
+                error_message = str(e)
+                print(error_message)
+                return {"Error": error_message}
             
     def sqlmap_attack(self):
         url = simpledialog.askstring("SQLMap", "Enter the URL to perform SQLMap attack on:")
