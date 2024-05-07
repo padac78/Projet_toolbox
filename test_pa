@@ -1,4 +1,6 @@
 import tkinter as tk
+import tkinter.ttk as ttk
+import threading
 from tkinter import simpledialog, messagebox
 import subprocess
 import requests
@@ -8,6 +10,9 @@ from bs4 import BeautifulSoup
 import re
 from fpdf import FPDF
 import nmap
+
+
+
 
 
 
@@ -76,30 +81,7 @@ class MenuGUI:
             self.generate_report("Scan")
         elif selected_option == "Exit":
             self.root.quit()
-    
-    def nmap_scan(self):
-        target = simpledialog.askstring("Nmap", "Entrez l'IP ou le nom:")
-        if target:
-            nm = nmap.PortScanner()
-            nm.scan(hosts=target, arguments='-sV -p 1-1024')  
-            scan_result = nm
-
-            output_window = tk.Toplevel(self.root)
-            output_window.title("Nmap Scan Output")
-            output_text = tk.Text(output_window)
-
-            for host in scan_result.all_hosts():
-                output_text.insert(tk.END, f"Host: {host}\n")
-                for proto in scan_result[host].all_protocols():
-                    output_text.insert(tk.END, f"Protocol: {proto}\n")
-                    ports = scan_result[host][proto].keys()
-                    for port in ports:
-                        state = scan_result[host][proto][port]['state']
-                        service = scan_result[host][proto][port]['name']
-                        output_text.insert(tk.END, f"Port: {port} - State: {state} - Service: {service}\n")
-
-            output_text.pack(fill=tk.BOTH, expand=True)
-            output_window.mainloop()    
+     
 
     def generate_report(self, category):
         report_filename = f"{category}_report.pdf"
@@ -116,26 +98,33 @@ class MenuGUI:
     def nmap_scan(self):
         target = simpledialog.askstring("Nmap", "Enter the target IP or hostname:")
         if target:
-            nm = nmap.PortScanner()
-            nm.scan(hosts=target, arguments='-sV -p 1-1024')  
-            scan_result = nm
-
             output_window = tk.Toplevel(self.root)
             output_window.title("Nmap Scan Output")
             output_text = tk.Text(output_window)
-
-            for host in scan_result.all_hosts():
-                output_text.insert(tk.END, f"Host: {host}\n")
-                for proto in scan_result[host].all_protocols():
-                    output_text.insert(tk.END, f"Protocol: {proto}\n")
-                    ports = scan_result[host][proto].keys()
-                    for port in ports:
-                        state = scan_result[host][proto][port]['state']
-                        service = scan_result[host][proto][port]['name']
-                        output_text.insert(tk.END, f"Port: {port} - State: {state} - Service: {service}\n")
-
             output_text.pack(fill=tk.BOTH, expand=True)
-            output_window.mainloop()  
+
+            progress = ttk.Progressbar(output_window, length=200, mode='indeterminate')
+            progress.pack()
+
+            def scan():
+                nm = nmap.PortScanner()
+                nm.scan(hosts=target, arguments='-sV -p 1-1024')
+                scan_result = nm
+
+                for host in scan_result.all_hosts():
+                    output_text.insert(tk.END, f"Host: {host}\n")
+                    for proto in scan_result[host].all_protocols():
+                        output_text.insert(tk.END, f"Protocol: {proto}\n")
+                        ports = scan_result[host][proto].keys()
+                        for port in ports:
+                            state = scan_result[host][proto][port]['state']
+                            service = scan_result[host][proto][port]['name']
+                            output_text.insert(tk.END, f"Port: {port} - State: {state} - Service: {service}\n")
+
+                progress.stop()
+
+            threading.Thread(target=scan).start()
+            progress.start(10)  
     
     def search_cve(self):
         cve_id = simpledialog.askstring("CVE", "Entrez l'ID de la CVE:")
