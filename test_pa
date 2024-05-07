@@ -175,7 +175,7 @@ class MenuGUI:
         if site_url:
             try:
                 # Exécute WPScan avec l'URL du site WordPress fournie en argument
-                result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect"], capture_output=True, text=True, stderr=subprocess.STDOUT, check=True)
+                result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=True)
                 output_window = tk.Toplevel(self.root)
                 output_window.title("WPScan Output")
                 output_text = tk.Text(output_window)
