@@ -13,7 +13,6 @@ import nmap
 
 
 
-
 def create_pdf_report(data, filename):
     
     pdf = FPDF()
