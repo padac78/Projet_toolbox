@@ -11,22 +11,12 @@ import nmap
 
 
 
-
-def get_wordpress_scan_data(site_url):
-
-    try:
-        # Exécute WPScan avec l'URL du site WordPress fournie en argument
-        result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect", "--wp-content-dir", "/path/to/wp-content"], capture_output=True, text=True)
-        return {"WPScan": result.stdout}
-    except FileNotFoundError:
-        return {"Error": "WPScan n'a pas été trouvé sur le système."}
-
 def create_pdf_report(data, filename):
     
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt="WordPress Scan Report", ln=True, align="C")
+    pdf.cell(200, 10, txt="WordPress Scan", ln=True, align="C")
     pdf.ln(10)
     for key, value in data.items():
         pdf.cell(200, 10, txt=f"{key}: {value}", ln=True)
@@ -86,6 +76,30 @@ class MenuGUI:
             self.generate_report("Scan")
         elif selected_option == "Exit":
             self.root.quit()
+    
+    def nmap_scan(self):
+        target = simpledialog.askstring("Nmap", "Entrez l'IP ou le nom:")
+        if target:
+            nm = nmap.PortScanner()
+            nm.scan(hosts=target, arguments='-sV -p 1-1024')  
+            scan_result = nm
+
+            output_window = tk.Toplevel(self.root)
+            output_window.title("Nmap Scan Output")
+            output_text = tk.Text(output_window)
+
+            for host in scan_result.all_hosts():
+                output_text.insert(tk.END, f"Host: {host}\n")
+                for proto in scan_result[host].all_protocols():
+                    output_text.insert(tk.END, f"Protocol: {proto}\n")
+                    ports = scan_result[host][proto].keys()
+                    for port in ports:
+                        state = scan_result[host][proto][port]['state']
+                        service = scan_result[host][proto][port]['name']
+                        output_text.insert(tk.END, f"Port: {port} - State: {state} - Service: {service}\n")
+
+            output_text.pack(fill=tk.BOTH, expand=True)
+            output_window.mainloop()    
 
     def generate_report(self, category):
         report_filename = f"{category}_report.pdf"
