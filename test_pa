@@ -181,12 +181,12 @@ class MenuGUI:
                 output_text = tk.Text(output_window)
                 output_text.insert(tk.END, result.stdout)
                 output_text.pack(fill=tk.BOTH, expand=True)
-                return {"WPScan Output": result.stdout}
+                return result.stdout  # Return the output as a string
             except (FileNotFoundError, subprocess.CalledProcessError) as e:
                 error_message = str(e)
                 print(error_message)
-                return {"Error": error_message}
-            
+                return error_message  # Return the error message as a string
+                
     def sqlmap_attack(self):
         url = simpledialog.askstring("SQLMap", "Enter the URL to perform SQLMap attack on:")
         if url:
