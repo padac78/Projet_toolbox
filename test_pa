@@ -13,30 +13,16 @@ import nmap
 
 
 def get_wordpress_scan_data(site_url):
-    """
-    This function gets the WordPress scan data.
 
-    Parameters:
-    site_url (str): The URL of the WordPress site.
-
-    Returns:
-    dict: The WordPress scan data.
-    """
     try:
         # Exécute WPScan avec l'URL du site WordPress fournie en argument
         result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect", "--wp-content-dir", "/path/to/wp-content"], capture_output=True, text=True)
-        return {"WPScan Output": result.stdout}
+        return {"WPScan": result.stdout}
     except FileNotFoundError:
-        return {"Error": "WPScan not found on the system. Make sure it is installed and accessible in your PATH."}
+        return {"Error": "WPScan n'a pas été trouvé sur le système."}
 
 def create_pdf_report(data, filename):
-    """
-    This function creates a PDF report from the provided data.
-
-    Parameters:
-    data (dict): The data to be included in the report.
-    filename (str): The filename for the PDF report.
-    """
+    
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -54,7 +40,7 @@ class MenuGUI:
         self.root.title("Menu")
         self.root.geometry("400x400")
 
-        self.menu_label = tk.Label(self.root, text="Select from the menu:")
+        self.menu_label = tk.Label(self.root, text="Sélectionnez une option : ")
         self.menu_label.pack()
 
         self.menu_options = tk.Listbox(self.root)
@@ -208,7 +194,7 @@ class MenuGUI:
                 result = subprocess.run(["sqlmap", "-u", url, "--dbs"], capture_output=True, text=True)
                 messagebox.showinfo("SQLMap Output", result.stdout)
             except FileNotFoundError:
-                print("SQLMap n'a pas été trouvé sur votre système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
+                print("SQLMap n'a pas été trouvé sur le système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
 
     def getSites(self):
         """
@@ -243,5 +229,5 @@ class MenuGUI:
             print(site)    
 
 root = tk.Tk()
-menu_gui = MenuGUI(root,"217.70.184.55")
+menu_gui = MenuGUI(root,"localhost")
 root.mainloop()
