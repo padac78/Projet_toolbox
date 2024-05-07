@@ -106,17 +106,6 @@ class MenuGUI:
             progress = ttk.Progressbar(output_window, length=200, mode='indeterminate')
             progress.pack()
 
-    def nmap_scan(self):
-        target = simpledialog.askstring("Nmap", "Enter the target IP or hostname:")
-        if target:
-            output_window = tk.Toplevel(self.root)
-            output_window.title("Nmap Scan Output")
-            output_text = tk.Text(output_window)
-            output_text.pack(fill=tk.BOTH, expand=True)
-
-            progress = ttk.Progressbar(output_window, length=200, mode='indeterminate')
-            progress.pack()
-
             def scan():
                 nm = nmap.PortScanner()
                 nm.scan(hosts=target, arguments='-p 1-1024')
