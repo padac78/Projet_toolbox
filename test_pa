@@ -184,10 +184,7 @@ class MenuGUI:
                 output_text.pack(fill=tk.BOTH, expand=True)
                 print(type(result))
                 return result.stdout  # Return the output as a string
-<<<<<<< HEAD
             
-=======
->>>>>>> 8821b6f112758baafa32466f14ff06fb154dcc45
                 
             except (FileNotFoundError, subprocess.CalledProcessError) as e:
                 error_message = str(e)
