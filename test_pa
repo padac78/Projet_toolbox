@@ -9,29 +9,37 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 from fpdf import FPDF
-from docx import Document  # Importing the library for Word document generation
 import nmap
+from docx import Document  # Importing the library for Word document generation
 
 def create_pdf_report(data, filename, title):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt=title, ln=True, align="C")  # Use the title parameter here
+    pdf.multi_cell(0, 10, txt=title, align="C")
     pdf.ln(10)
     for key, value in data.items():
         if not isinstance(value, str):
             value = str(value)
-        pdf.cell(200, 10, txt=f"{key}: {value}", ln=True)
+        pdf.multi_cell(0, 10, txt=f"{key}: {value}".encode('latin-1', 'replace').decode('latin-1'))  # Encode and decode with 'latin-1' codec
     pdf.output(filename)
 
-def create_word_report(data, filename, title):
-    doc = Document()
-    doc.add_heading(title, 0)
-    for key, value in data.items():
-        if not isinstance(value, str):
-            value = str(value)
-        doc.add_paragraph(f"{key}: {value}")
-    doc.save(filename)
+def append_text_to_pdf(data, filename):
+    with open(filename, 'ab') as file:  # Open the existing PDF file in append mode
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.add_page()
+
+        # Add the new text
+        for key, value in data.items():
+            if not isinstance(value, str):
+                value = str(value)
+            value = value.encode('latin-1', 'replace').decode('latin-1')
+            key = key.encode('latin-1', 'replace').decode('latin-1')
+            pdf.cell(200, 10, txt=f"{key}: {value}", ln=True)
+
+        pdf.output(file)
+
 
 class MenuGUI:
     
@@ -88,25 +96,15 @@ class MenuGUI:
         elif selected_option == "Exit":
             self.root.quit()
      
-
     def generate_report(self, category):
-        file_type = simpledialog.askstring("Report Type", "Enter the report type (pdf/word):")
-        report_filename = f"{category}_report.{file_type}"
-        
-        if file_type not in ['pdf', 'word']:
-            messagebox.showerror("Invalid Type", "Invalid report type specified. Please enter 'pdf' or 'word'.")
-            return
+        report_filename = f"{category}_report.pdf"
+        messagebox.showinfo("Report Generated", f"PDF report for {category} is being generated: {report_filename}")
 
-        messagebox.showinfo("Report Generated", f"{file_type.upper()} report for {category} is being generated: {report_filename}")
-
-        # Generate the report
+        # Generate PDF report
         try:
-            if file_type == 'pdf':
-                create_pdf_report(self.report_data, report_filename, category)
-            elif file_type == 'word':
-                create_word_report(self.report_data, report_filename, category)
+            create_pdf_report(self.report_data, report_filename, category)  # Pass the report_data to the function
         except Exception as e:
-            messagebox.showerror("Error", f"An error occurred while generating the {file_type.upper()} report: {str(e)}")
+            messagebox.showerror("Error", f"An error occurred while generating PDF report: {str(e)}")
 
     def nmap_scan(self):
         target = simpledialog.askstring("Nmap", "Enter the target IP or hostname:")
@@ -150,85 +148,61 @@ class MenuGUI:
                 cve_detail_element = soup.find('p', attrs={'data-testid': 'vuln-description'})
                 if cve_detail_element is not None:
                     cve_detail = cve_detail_element.text.strip()
+                    self.report_data["Check CVE"] = f"{cve_id}: {cve_detail}"  # Add CVE detail to report_data
                     self.text.insert(tk.END, f"CVE Detail for {cve_id}:\n")
                     self.text.insert(tk.END, f"{cve_detail}\n")
+                    return f"{cve_id}: {cve_detail}"  # Return the added CVE detail
                 else:
                     self.text.insert(tk.END, f"No detail found for CVE: {cve_id}\n")
             except Exception as e:
                 self.text.insert(tk.END, f"An error occurred while checking CVE: {str(e)}\n")
-    
+        return None  # Return None if no CVE detail is added
+        
     def perform_xss_attack(self):
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
         if url:
-            # Define the XSS payload
             payload = "<script>alert('XSS Attack!')</script>"
-
-            # Create the form data with the XSS payload
-            form_data = {
-                "input_field": payload
-            }
-
-            print(f"Sending POST request to: {url}")
-            print(f"Data: {form_data}")
-
+            form_data = {"input_field": payload}
             try:
-                # Send the POST request with the form data
                 response = requests.post(url, data=form_data)
-
-                # Print the response headers
-                print(f"Response Headers: {response.headers}")
-
-                # Check if the request was successful
                 if response.status_code == 200:
-                    print("XSS Attack successful!")
+                    return "XSS Attack successful!"
                 else:
-                    print("XSS Attack failed. Status code:", response.status_code)
+                    return f"XSS Attack failed. Status code: {response.status_code}"
             except requests.exceptions.RequestException as e:
-                print("An error occurred:", e)
-        return response.status_code
+                return f"An error occurred: {e}"
+        return "No URL provided."
 
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Entre l'URL du site à scanner:")
         if site_url:
             try:
-                # Exécute WPScan avec l'URL du site WordPress fournie en argument
                 result = subprocess.run(["wpscan", "--url", site_url, "--enumerate", "u", "--ignore-main-redirect"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=True)
                 output_window = tk.Toplevel(self.root)
                 output_window.title("WPScan Output")
                 output_text = tk.Text(output_window)
                 output_text.insert(tk.END, result.stdout)
                 output_text.pack(fill=tk.BOTH, expand=True)
-                print(type(result))
-                return result.stdout  # Return the output as a string
-            
-                
+                return result.stdout
             except (FileNotFoundError, subprocess.CalledProcessError) as e:
-                error_message = str(e)
-                print(error_message)
-                return error_message  # Return the error message as a string
-            return result.stdout
-                
+                return str(e)
+
     def sqlmap_attack(self):
         url = simpledialog.askstring("SQLMap", "Enter the URL to perform SQLMap attack on:")
         if url:
             try:
-                # Exécuter SQLMap avec l'URL fournie en argument
                 result = subprocess.run(["sqlmap", "-u", url, "--dbs"], capture_output=True, text=True)
-                messagebox.showinfo("SQLMap Output", result.stdout)
+                return result.stdout
             except FileNotFoundError:
-                print("SQLMap n'a pas été trouvé sur le système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution.")
-        return result.stdout
-    
+                return "SQLMap n'a pas été trouvé sur le système. Assurez-vous qu'il est installé et accessible dans votre chemin d'exécution."
+        return "No URL provided."
+
     def getSites(self):
-        """
-        get all websites on same server
-        from bing search
-        """
         lista = []
         page = 1
         while page <= 101:
             try:
-                bing = "http://www.bing.com/search?q=ip%3A" + self.serverip + "+&count=50&first=" + str(page)
+                bing = f"http://www.bing.com/search?q=ip%3A{self.serverip}+&count=50&first={page}"
                 openbing = urlopen(bing)
                 soup = BeautifulSoup(openbing, 'html.parser')
                 findwebs = [h2.a['href'] for h2 in soup.find_all('h2')]
@@ -241,18 +215,15 @@ class MenuGUI:
                         else:
                             findall1[idx] = 'http://' + item + '/'
                     lista.extend(findall1)
-                
                 page += 50
             except urllib.error.URLError:
                 pass
-        self.sites = list(set(lista))  # use set to get unique items
-        print('\033c')  # clear screen
-        print('[*] Found', len(lista), 'Website\n')
-        for site in self.sites :
-            print(site) 
-        return self.sites   
+        self.sites = list(set(lista))
+        print('\033c')
+        return self.sites
 
-root = tk.Tk()
-menu_gui = MenuGUI(root, "localhost")
-root.mainloop()
-
+# Main execution code
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = MenuGUI(root, serverip="127.0.0.1")  # Replace with the actual server IP if needed
+    root.mainloop()
