@@ -17,3 +17,10 @@ Il est divisé en plusieurs fonctions :
 
 
 Il permet aussi de vérifier les CVE au sein de l'entreprise et va donner les détails de ces dernières.
+
+- il permet aussi de vérifier si un site web est vulnérable aux attaques XSS sur les entètes principalement.
+
+- Il permet aussi de vérifier si de l'injection SQL est possible sur le site web.
+
+Enfin il permet de générer les résultats en PDF directement. 
+
