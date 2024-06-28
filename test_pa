@@ -93,7 +93,7 @@ class MenuGUI:
         elif selected_option == "Nmap":
             self.report_data["Nmap"] = self.nmap_scan()
         elif selected_option == "Generate Report":
-            self.generate_report("Scan")
+            self.generate_report("Scan de sécurité -- Confidentiel")
         elif selected_option == "Exit":
             self.root.quit()
 
