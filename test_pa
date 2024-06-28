@@ -9,8 +9,8 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 from fpdf import FPDF
-import nmap
-from docx import Document  # Importing the library for Word document generation
+import nmap 
+ 
 
 def create_pdf_report(data, filename, title):
     pdf = FPDF()
@@ -161,10 +161,12 @@ class MenuGUI:
     def perform_xss_attack(self):
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
         if url:
+            print(f"URL: {url}")  # Print the URL
             payload = "<script>alert('XSS Attack!')</script>"
             form_data = {"input_field": payload}
             try:
                 response = requests.post(url, data=form_data)
+                print(f"Response: {response.text}")  # Print the response
                 if response.status_code == 200:
                     return "XSS Attack successful!"
                 else:
@@ -172,7 +174,7 @@ class MenuGUI:
             except requests.exceptions.RequestException as e:
                 return f"An error occurred: {e}"
         return "No URL provided."
-
+    
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Entre l'URL du site à scanner:")
         if site_url:
