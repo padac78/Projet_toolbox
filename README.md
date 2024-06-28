@@ -27,4 +27,6 @@ Enfin il permet de générer les résultats en PDF directement.
 
 ##############################################################################
 
-Pour l'éxécuter, il te suffit de git clone le projet, aller dans "Projet-toolbox"
+Pour l'éxécuter, il te suffit de git clone le projet, aller dans "Projet_toolbox" et lancer avec la commande "python3 test_pa"
+
+Have fun :)
