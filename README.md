@@ -4,7 +4,7 @@ L’objet du projet sera de développer une toolbox automatique qui sera conçue
 Je suis parti sur une ToolBox basée sur le scan de sites web, l'objectif sera de scanner le ou les sites web d'une entreprise pour la sécuriser au maximum.
 Nous savons aujourd'hui que beaucoup d'entreprises se basent sur leur site web pour attirer les potentiels futurs clients ou acheteurs.
 
-##########################
+##############################################################################
 
 # Ce projet est divisé en plusieurs fonctions qui me permettent de scanner et attaquer éthiquement un site 
 
@@ -24,3 +24,7 @@ Il permet aussi de vérifier les CVE au sein de l'entreprise et va donner les d�
 
 Enfin il permet de générer les résultats en PDF directement. 
 
+
+##############################################################################
+
+Pour l'éxécuter, il te suffit de git clone le projet, aller dans "Projet-toolbox"
