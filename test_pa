@@ -9,8 +9,8 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 from fpdf import FPDF
-import nmap 
- 
+import nmap
+
 
 def create_pdf_report(data, filename, title):
     pdf = FPDF()
@@ -23,6 +23,7 @@ def create_pdf_report(data, filename, title):
             value = str(value)
         pdf.multi_cell(0, 10, txt=f"{key}: {value}".encode('latin-1', 'replace').decode('latin-1'))  # Encode and decode with 'latin-1' codec
     pdf.output(filename)
+
 
 def append_text_to_pdf(data, filename):
     with open(filename, 'ab') as file:  # Open the existing PDF file in append mode
@@ -42,7 +43,7 @@ def append_text_to_pdf(data, filename):
 
 
 class MenuGUI:
-    
+
     def __init__(self, root, serverip):
         self.root = root
         self.serverip = serverip
@@ -95,7 +96,7 @@ class MenuGUI:
             self.generate_report("Scan")
         elif selected_option == "Exit":
             self.root.quit()
-     
+
     def generate_report(self, category):
         report_filename = f"{category}_report.pdf"
         messagebox.showinfo("Report Generated", f"PDF report for {category} is being generated: {report_filename}")
@@ -136,8 +137,8 @@ class MenuGUI:
                 return scan_result
 
             threading.Thread(target=scan).start()
-            progress.start(10)  
-    
+            progress.start(10)
+
     def search_cve(self):
         cve_id = simpledialog.askstring("CVE", "Entrez l'ID de la CVE:")
         if cve_id:
@@ -157,7 +158,7 @@ class MenuGUI:
             except Exception as e:
                 self.text.insert(tk.END, f"An error occurred while checking CVE: {str(e)}\n")
         return None  # Return None if no CVE detail is added
-        
+
     def perform_xss_attack(self):
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
         if url:
@@ -168,13 +169,17 @@ class MenuGUI:
                 response = requests.post(url, data=form_data)
                 print(f"Response: {response.text}")  # Print the response
                 if payload in response.text:
-                    return "The site may be vulnerable to XSS attacks!"
+                    show_alert = messagebox.askyesno("XSS Vulnerability Detected", "The site may be vulnerable to XSS attacks! Do you want to display this message?")
+                    if show_alert:
+                        return "The site may be vulnerable to XSS attacks!"
+                    else:
+                        return "The site may be vulnerable to XSS attacks! (Alert not displayed)"
                 else:
                     return "The site is not vulnerable to XSS attacks."
             except requests.exceptions.RequestException as e:
                 return f"An error occurred: {e}"
         return "No URL provided."
-    
+
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Entre l'URL du site à scanner:")
         if site_url:
@@ -223,6 +228,7 @@ class MenuGUI:
         self.sites = list(set(lista))
         print('\033c')
         return self.sites
+
 
 # Main execution code
 if __name__ == "__main__":
