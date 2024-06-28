@@ -162,15 +162,15 @@ class MenuGUI:
         url = simpledialog.askstring("XSS Tracer", "Enter the URL to perform XSS attack on:")
         if url:
             print(f"URL: {url}")  # Print the URL
-            payload = "<script>alert('XSS Attack!')</script>"
+            payload = "<img src=x onerror=alert('XSS Attack!')>"
             form_data = {"input_field": payload}
             try:
                 response = requests.post(url, data=form_data)
                 print(f"Response: {response.text}")  # Print the response
-                if response.status_code == 200:
-                    return "XSS Attack successful!"
+                if payload in response.text:
+                    return "The site may be vulnerable to XSS attacks!"
                 else:
-                    return f"XSS Attack failed. Status code: {response.status_code}"
+                    return "The site is not vulnerable to XSS attacks."
             except requests.exceptions.RequestException as e:
                 return f"An error occurred: {e}"
         return "No URL provided."
