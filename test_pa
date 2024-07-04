@@ -167,23 +167,26 @@ class MenuGUI:
             form_data = {"input_field": payload}
             try:
                 response = requests.post(url, data=form_data)
-                print(f"Response status code: {response.status_code}")  # Print the response status code
-                print(f"Response headers: {response.headers}")  # Print the response headers
-                print(f"Response text: {response.text}")  # Print the response text
+                status_code = response.status_code
+                headers = response.headers
+                print(f"Response status code: {status_code}")  # Print the response status code
+                print(f"Response headers: {headers}")  # Print the response headers
+                
                 if payload in response.text:
                     show_alert = messagebox.askyesno("XSS Vulnerability Detected", "The site may be vulnerable to XSS attacks! Do you want to display this message?")
                     if show_alert:
-                        return "The site may be vulnerable to XSS attacks!"
+                        return f"The site may be vulnerable to XSS attacks!\nResponse status code: {status_code}\nResponse headers: {headers}"
                     else:
-                        return "The site may be vulnerable to XSS attacks! (Alert not displayed)"
+                        return f"The site may be vulnerable to XSS attacks! (Alert not displayed)\nResponse status code: {status_code}\nResponse headers: {headers}"
                 else:
-                    return "The site is not vulnerable to XSS attacks."
+                    return f"The site is not vulnerable to XSS attacks.\nResponse status code: {status_code}\nResponse headers: {headers}"
             except requests.exceptions.RequestException as e:
                 print(f"RequestException: {e}")  # Print the exception
                 return f"An error occurred: {e}"
         else:
             print("No URL provided.")  # Print if no URL is provided
         return "No URL provided."
+
 
 
     def wpscan_scan(self):
