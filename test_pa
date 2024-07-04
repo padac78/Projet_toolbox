@@ -167,7 +167,9 @@ class MenuGUI:
             form_data = {"input_field": payload}
             try:
                 response = requests.post(url, data=form_data)
-                print(f"Response: {response.text}")  # Print the response
+                print(f"Response status code: {response.status_code}")  # Print the response status code
+                print(f"Response headers: {response.headers}")  # Print the response headers
+                print(f"Response text: {response.text}")  # Print the response text
                 if payload in response.text:
                     show_alert = messagebox.askyesno("XSS Vulnerability Detected", "The site may be vulnerable to XSS attacks! Do you want to display this message?")
                     if show_alert:
@@ -177,8 +179,12 @@ class MenuGUI:
                 else:
                     return "The site is not vulnerable to XSS attacks."
             except requests.exceptions.RequestException as e:
+                print(f"RequestException: {e}")  # Print the exception
                 return f"An error occurred: {e}"
+        else:
+            print("No URL provided.")  # Print if no URL is provided
         return "No URL provided."
+
 
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Entre l'URL du site à scanner:")
