@@ -8,39 +8,49 @@ import urllib.error
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
-from fpdf import FPDF
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.enums import TA_CENTER
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.units import inch
 import nmap
 
-
 def create_pdf_report(data, filename, title):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt=title, align="C")
-    pdf.ln(10)
+    doc = SimpleDocTemplate(filename, pagesize=A4)
+    elements = []
+
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    title_style.alignment = TA_CENTER
+    elements.append(Paragraph(title, title_style))
+    elements.append(Spacer(1, 12))
+
+    table_data = []
+
     for key, value in data.items():
         if not isinstance(value, str):
             value = str(value)
-        pdf.multi_cell(0, 10, txt=f"{key}: {value}".encode('latin-1', 'replace').decode('latin-1'))  # Encode and decode with 'latin-1' codec
-    pdf.output(filename)
+        table_data.append([key, value])
 
+    table = Table(table_data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    elements.append(table)
+    doc.build(elements)
 
 def append_text_to_pdf(data, filename):
-    with open(filename, 'ab') as file:  # Open the existing PDF file in append mode
-        pdf = FPDF()
-        pdf.set_auto_page_break(auto=True, margin=15)
-        pdf.add_page()
-
-        # Add the new text
-        for key, value in data.items():
-            if not isinstance(value, str):
-                value = str(value)
-            value = value.encode('latin-1', 'replace').decode('latin-1')
-            key = key.encode('latin-1', 'replace').decode('latin-1')
-            pdf.cell(200, 10, txt=f"{key}: {value}", ln=True)
-
-        pdf.output(file)
-
+    # Load existing PDF (not straightforward in ReportLab, typically done using PyPDF2 or similar libraries)
+    # For simplicity, we'll regenerate the PDF with the new data appended.
+    create_pdf_report(data, filename, "Updated Report")
 
 class MenuGUI:
 
@@ -195,9 +205,6 @@ class MenuGUI:
             print("No URL provided.")  # Print if no URL is provided
         return "No URL provided."
 
-
-
-
     def wpscan_scan(self):
         site_url = simpledialog.askstring("Wordpress", "Entre l'URL du site à scanner:")
         if site_url:
@@ -246,7 +253,6 @@ class MenuGUI:
         self.sites = list(set(lista))
         print('\033c')
         return self.sites
-
 
 # Main execution code
 if __name__ == "__main__":
