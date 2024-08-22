@@ -20,20 +20,15 @@ def create_pdf_report(data, filename, title):
     doc = SimpleDocTemplate(filename, pagesize=A4)
     elements = []
 
-    styles = getSampleStyleSheet()
-    title_style = styles['Title']
-    title_style.alignment = TA_CENTER
-    elements.append(Paragraph(title, title_style))
+    # Add title
+    elements.append(Paragraph(title, getSampleStyleSheet()['Title']))
     elements.append(Spacer(1, 12))
 
-    table_data = []
-
-    for key, value in data.items():
-        if not isinstance(value, str):
-            value = str(value)
-        table_data.append([key, value])
-
-    table = Table(table_data)
+    # Convert data dictionary to table data
+    table_data = [[key, str(value)] for key, value in data.items()]
+    
+    # Create table
+    table = Table(table_data, repeatRows=1)  # `repeatRows=1` will repeat the first row as a header
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -44,8 +39,15 @@ def create_pdf_report(data, filename, title):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
 
+    # Allow the table to split across pages
+    table._argW[0] = 2 * inch
     elements.append(table)
-    doc.build(elements)
+    
+    try:
+        doc.build(elements)
+    except Exception as e:
+        print(f"An error occurred while generating PDF report: {str(e)}")
+        messagebox.showerror("Error", f"An error occurred while generating PDF report: {str(e)}")
 
 def append_text_to_pdf(data, filename):
     # Load existing PDF (not straightforward in ReportLab, typically done using PyPDF2 or similar libraries)
