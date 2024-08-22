@@ -9,51 +9,68 @@ from bs4 import BeautifulSoup
 import re
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
+from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 import nmap
 
-def create_pdf_report(data, filename, title):
-    doc = SimpleDocTemplate(filename, pagesize=A4)
-    elements = []
-    styles = getSampleStyleSheet()
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, PageBreak
 
-    # Ajouter un titre au rapport
-    title_paragraph = Paragraph(title, styles['Title'])
+def create_pdf_report(data, filename, title):
+    doc = SimpleDocTemplate(filename, pagesize=letter)
+    elements = []
+
+    styles = getSampleStyleSheet()
+    title_style = styles["Title"]
+    title_paragraph = Paragraph(title, title_style)
     elements.append(title_paragraph)
 
-    # Add data to elements
+    elements.append(PageBreak())
+
+    # Process data for the table
     for key, value in data.items():
-        if not isinstance(value, str):
-            value = str(value)
-        key_paragraph = Paragraph(f"<b>{key}:</b>", styles['Heading2'])
-        value_paragraph = Paragraph(value, styles['Normal'])
-        elements.append(key_paragraph)
-        elements.append(value_paragraph)
+        # Add section title
+        section_title = Paragraph(key, styles['Heading2'])
+        elements.append(section_title)
 
-    # Creating table data in a 2D list format
-    table_data = []
-    for i in range(0, len(elements), 2):  # Iterate two at a time
-        if i + 1 < len(elements):
-            table_data.append([elements[i], elements[i + 1]])
-        else:
-            table_data.append([elements[i], ""])  # Add empty string if there's no pair
+        # Convert content to a table, split large content into multiple rows if necessary
+        table_data = []
 
-    # Create the table
-    table = Table(table_data, colWidths=doc.width / 2)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Corrected font name
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
+        # Attempt to split the content if it's too large
+        lines = value.split('\n')
+        max_lines_per_cell = 20  # Set a limit for how many lines can go into each cell
+        split_content = [lines[i:i + max_lines_per_cell] for i in range(0, len(lines), max_lines_per_cell)]
 
-    elements.append(Spacer(1, 12))
-    elements.append(table)
-    doc.build(elements)
+        for part in split_content:
+            table_data.append([Paragraph("<br/>".join(part), styles['BodyText'])])
+
+        # Create the table
+        table = Table(table_data, colWidths=[7.5 * inch])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        elements.append(table)
+        elements.append(PageBreak())
+
+    # Build the PDF
+    try:
+        doc.build(elements)
+    except Exception as e:
+        print(f"An error occurred while generating PDF report: {e}")
+
+
 
 class MenuGUI:
     def __init__(self, root, serverip):
