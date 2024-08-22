@@ -29,4 +29,6 @@ Enfin il permet de générer les résultats en PDF directement.
 
 Pour l'éxécuter, il te suffit de git clone le projet, aller dans "Projet_toolbox" et lancer avec la commande "python3 test_pa"
 
-Have fun :)
+# Perspectives d'améliorations : 
+
+Je sais que cette toolbox peut évoluer et faire beaucoup plus de choses avec le temps, je vais continuer de la développer tout au long de l'année pour ainsi l'implémenter dans mon entreprise.
