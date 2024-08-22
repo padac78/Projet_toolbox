@@ -131,19 +131,21 @@ class MenuGUI:
             def scan():
                 nm = nmap.PortScanner()
                 nm.scan(hosts=target, arguments='-p 1-1024')
-                scan_result = nm
+                scan_result = ""
 
-                for host in scan_result.all_hosts():
-                    output_text.insert(tk.END, f"Host: {host}\n")
-                    for proto in scan_result[host].all_protocols():
-                        output_text.insert(tk.END, f"Protocol: {proto}\n")
-                        ports = scan_result[host][proto].keys()
+                for host in nm.all_hosts():
+                    scan_result += f"Host: {host}\n"
+                    for proto in nm[host].all_protocols():
+                        scan_result += f"Protocol: {proto}\n"
+                        ports = nm[host][proto].keys()
                         for port in ports:
-                            state = scan_result[host][proto][port]['state']
-                            service = scan_result[host][proto][port]['name']
-                            output_text.insert(tk.END, f"Port: {port} - State: {state} - Service: {service}\n")
+                            state = nm[host][proto][port]['state']
+                            service = nm[host][proto][port]['name']
+                            scan_result += f"Port: {port} - State: {state} - Service: {service}\n"
 
+                output_text.insert(tk.END, scan_result)
                 progress.stop()
+                self.report_data["Nmap"] = scan_result  # Store the result in report_data
                 return scan_result
 
             threading.Thread(target=scan).start()
