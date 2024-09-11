@@ -126,17 +126,38 @@ class MenuGUI:
 
             def scan():
                 try:
-                    result = subprocess.run(['python3', 'rapidscan.py', target], cwd="/home/hisskild/Projet_toolbox/rapidscan", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    # Utilisation de subprocess.Popen pour capturer la sortie en temps réel
+                    process = subprocess.Popen(
+                        ['python3', 'rapidscan.py', target], 
+                        cwd="/home/hisskild/Projet_toolbox/rapidscan",
+                        stdout=subprocess.PIPE, 
+                        stderr=subprocess.PIPE, 
+                        text=True
+                    )
 
-                    output_text.insert(tk.END, result.stdout)
-                    self.report_data["Rapidscan"] = result.stdout
+                    # Lire la sortie ligne par ligne et l'afficher dans la fenêtre
+                    for line in process.stdout:
+                        output_text.insert(tk.END, line)
+                        output_text.see(tk.END)  # Scroll automatiquement vers le bas
+                        output_text.update()  # Mise à jour de l'interface pour afficher la sortie
+
+                    # Lire les erreurs et les afficher dans la fenêtre
+                    for error_line in process.stderr:
+                        output_text.insert(tk.END, f"Error: {error_line}")
+                        output_text.see(tk.END)
+                        output_text.update()
+
+                    # Stocker la sortie dans report_data
+                    self.report_data["Rapidscan"] = output_text.get("1.0", tk.END)
                     progress.stop()
+
                 except Exception as e:
                     output_text.insert(tk.END, f"An error occurred: {e}")
                     progress.stop()
 
             threading.Thread(target=scan).start()
             progress.start(10)
+
 
     # Add the rest of your functions here, such as nmap_scan, wpscan_scan, sqlmap_attack, etc.
     # Example for nmap_scan:
