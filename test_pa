@@ -308,7 +308,7 @@ class MenuGUI:
 
             def scan():
                 try:
-                    result = subprocess.run(['python3', 'rapidscan.py', target], cwd="path_to_rapidscan_directory", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    result = subprocess.run(['python3', 'rapidscan.py', target], cwd="/home/hisskild/Projet_toolbox/rapidscan", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                     output_text.insert(tk.END, result.stdout)
                     self.report_data["Rapidscan"] = result.stdout
                     progress.stop()
